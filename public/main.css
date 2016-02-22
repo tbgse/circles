@@ -1,0 +1,112 @@
+body,html {
+    height:100%;
+    margin:0;
+    padding:0;
+    font-size:16px;
+    font-family:"Open Sans";
+}
+textarea {
+    box-sizing:border-box;
+}
+.wrapper {
+    height:100%;
+    width:100%;
+
+}
+.user-list {
+    height:100%;
+    background:#fff;
+    width:400px;
+    float:left;
+
+}
+.chat-wrapper {
+    overflow:hidden;
+    height:100%;
+    position:relative;
+    background:lightgrey;
+}
+.content {
+    width:100%;
+    font-size:1.5rem;
+    background:lightgrey;
+    padding:25px 10% 25px 10%;
+    box-sizing:border-box;
+    overflow-y:scroll;
+    height:100%;
+}
+.user-image {
+    height:90px;
+    width:90px;
+    border-radius:50%;
+    background:#ccc;
+}
+.left {
+    float:left;
+}
+.right {
+    float:right;
+}
+.chatbox {
+    position:absolute;
+    bottom:0;
+    right:0;
+    width:100%;
+    height:80px;
+    background:#fff;
+    z-index:5;
+}
+.chatbox textarea {
+    font-size:1.3rem;
+    padding:10px;
+ width:100%;
+ height:90%;
+ border:none;
+ resize:none;
+}
+.chatbox textarea:focus {
+    outline:none;
+}
+.message-bubble-container {
+    width:100%;
+    background:transparent;
+    height:110px;
+}
+.message-bubble-left:after,.message-bubble-right:after{
+	top: 25%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+.message-bubble-left:after {
+    left:-27px;
+	border-color: rgba(255, 255, 255, 0);
+	border-right-color: #ffffff;
+	border-width: 15px;
+}
+.message-bubble-right:after {
+    right:-27px;
+	border-color: rgba(255, 255, 255, 0);
+	border-left-color: #ffffff;
+	border-width: 15px;
+}
+.message-bubble-left, .message-bubble-right {
+    background:white;
+    display:block;
+    position:relative;
+    top:15px;
+    padding:15px 35px 15px 35px;
+    border-radius:25px;
+}
+.message-bubble-left {
+    margin-left:20px;
+    float:left;
+}
+
+.message-bubble-right {
+    margin-right:20px;
+    float:right;
+}
