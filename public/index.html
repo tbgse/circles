@@ -7,21 +7,22 @@
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
     </head>
     <body>
+    <div class='overlay-message'><h2>Hey there!</h2> <p>before entering the chat, please enter your username below:</p>
+    <form id='setUsername'>
+    <input type='text' id='username'><button type='submit'>Enter</button></div>
+    </form>
+    <div class='overlay'></div>
     <div class='wrapper'>
-    <div class='user-list'></div>
-    
-    <div class='chat-wrapper'>
-
-    <div class='chatbox'>
-    <form id='chat'>
-    <textarea type='text' id='message' name='message' placeholder='Type your message here.'></textarea>
-        </form>
+        <div class='user-list'></div>
+        <div class='chat-wrapper'>
+            <div class='chatbox'>
+                <form id='chat'>
+                    <textarea type='text' id='message' name='message' placeholder='Type your message here.'></textarea>
+                </form>
+            </div>
+            <div id='content' class='content'>
+            </div>
         </div>
-    <div id='content' class='content'>
-        
-    <div style='clear:both'></div>    
-    </div>
-    </div>
     </div>
     </body>
 </html>
