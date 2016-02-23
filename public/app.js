@@ -12,6 +12,7 @@ $(document).ready(function(){
     $('#setUsername').submit(function(event){
         event.preventDefault();
         username = $('#username').val();
+        socket.emit('channel join',username);
         $('.overlay').remove();
         $('.overlay-message').remove();
     })
@@ -29,8 +30,13 @@ $(document).ready(function(){
     })
     
     socket.on('text message',function(msg){
-    var d = new Date();
-    var timestamp = d.getHours() + ':' + d.getMinutes();
-    $('#content').append('</div><div class="message-bubble-container"><div class="user-image left"></div><div class="message-bubble-left"><p class="username">'+msg.username+':</p>'+msg.message+'<p class="timestamp">'+timestamp+'</div></div>')   
+        var d = new Date();
+        var timestamp = d.getHours() + ':' + d.getMinutes();
+        $('#content').append('<div class="message-bubble-container"><div class="user-image left"></div><div class="message-bubble-left"><p class="username">'+msg.username+':</p>'+msg.message+'<p class="timestamp">'+timestamp+'</div></div>')   
+    })
+    socket.on('channel join',function(user){
+        console.log(user)
+         $('#content').append('<div class="info-message">'+user[user.length-1]+' joined the chat.</div>')
+         $('#users').html(user)
     })
 })

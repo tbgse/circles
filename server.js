@@ -9,13 +9,17 @@ router.get('/',function(req,res){
 })
 
 router.use(express.static('public'))
-
+var activeUsers = [];
 io.on('connection',function(socket){
     
     console.log(socket.id)
     console.log('a user connected');
     socket.on('disconnect',function(){
-    console.log('user disconnected')    
+         
+    })
+    socket.on('channel join',function(user){
+        activeUsers.push(user)
+        io.emit('channel join',activeUsers);
     })
     socket.on('text message',function(msg){
         socket.broadcast.emit('text message',msg)
