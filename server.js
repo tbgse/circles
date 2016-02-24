@@ -4,8 +4,10 @@ var express = require('express'),
     server = http.createServer(router),
     jdenticon = require('jdenticon'),
     fs = require('fs'),
-    md5 = require('js-md5')
+    md5 = require('js-md5'),
+    cloudinary = require('cloudinary'),   
     io = require('socket.io')(server);
+
 
 router.get('/',function(req,res){
     res.sendFile(process.cwd()+'/public/index.html')
@@ -20,8 +22,6 @@ io.on('connection',function(socket){
     console.log(socket.id)
     console.log('a user connected');
     socket.on('disconnect',function(){
-        console.log(socket.id + ' is leaving the chat')
-        console.log("it's the user "+username)
         activeUsers.splice(activeUsers.indexOf(username),1);
         io.emit('channel leave',username)
         fs.unlink(process.cwd()+"/public/icons/"+username+".svg")
