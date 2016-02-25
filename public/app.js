@@ -11,6 +11,7 @@ $(document).ready(function(){
     $('#setUsername').submit(function(event){
         event.preventDefault();
         username = $('#username').val();
+        username = username.replace(/[^\w\s\d]/g,' ');
         socket.emit('channel join',username);
         $('.overlay').remove();
         $('.overlay-message').remove();
