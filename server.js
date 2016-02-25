@@ -33,6 +33,10 @@ io.on('connection',function(socket){
 });
     })
     socket.on('channel join',function(user){
+        while (activeUsers.indexOf(user) >=0 ) {
+        console.log('user already exists, creating alter ego')
+        user = user += Math.floor(Math.random()*100)
+        }
         activeUsers.push(user)
         username = user;
         var hash = md5(username);

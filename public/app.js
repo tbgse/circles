@@ -43,6 +43,7 @@ $(document).ready(function(){
         $('#content').scrollTop(document.getElementById('content').scrollHeight)
     })
     socket.on('channel load',function(users){
+        username = users[users.length-1];
             $('#content').append('<div class="info-message">'+users[users.length-1]+' joined the chat.</div>')
             $('#content').scrollTop(document.getElementById('content').scrollHeight)
             $('#users').empty();
