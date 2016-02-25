@@ -17,11 +17,15 @@ $(document).ready(function(){
     })
     $('#chat').submit(function(event){
     event.preventDefault();
-    var message = $('#message').val();
+    var writing = $('#message').val();
+    var message = $('<span />',{text:writing})
     var d = new Date();
+    console.log(message)
     var timestamp = d.getHours() + ':' + d.getMinutes();
-    socket.emit('text message',{username:username,message:message});
-    $('#content').append('<div class="message-bubble-container"><img class="user-image right" src="icons/'+username+'.svg"><div class="message-bubble-right"><p class="username">Me:</p>'+$('#message').val()+'<p class="timestamp">'+timestamp+'</p></div></div>')  
+    socket.emit('text message',{username:username,message:writing});
+    var element = $('<div class="message-bubble-container">').append($('<img class="user-image right" src="icons/'+username+'.svg">')).append($('<div class="message-bubble-right">').append($('<p class="username">Me:</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
+    //$('#content').append('<div class="message-bubble-container"><img class="user-image right" src="icons/'+username+'.svg"><div class="message-bubble-right"><p class="username">Me:</p>'+message+'<p class="timestamp">'+timestamp+'</p></div></div>')  
+    $("#content").append(element)
     $('#content').scrollTop(document.getElementById('content').scrollHeight)
     $('#message').val('').focus();
     return false;
@@ -30,7 +34,11 @@ $(document).ready(function(){
     socket.on('text message',function(msg){
         var d = new Date();
         var timestamp = d.getHours() + ':' + d.getMinutes();
-        $('#content').append('<div class="message-bubble-container"><img class="user-image left" src="icons/'+msg.username+'.svg"><div class="message-bubble-left"><p class="username">'+msg.username+':</p>'+msg.message+'<p class="timestamp">'+timestamp+'</div></div>') 
+        var message = $('<span />',{text:msg.message})
+        console.log(message)
+        var element = $('<div class="message-bubble-container">').append($('<img class="user-image left" src="icons/'+username+'.svg">')).append($('<div class="message-bubble-left">').append($('<p class="username">'+msg.username+'</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
+        //$('#content').append('<div class="message-bubble-container"><img class="user-image left" src="icons/'+msg.username+'.svg"><div class="message-bubble-left"><p class="username">'+msg.username+':</p>'+msg.message+'<p class="timestamp">'+timestamp+'</div></div>') 
+        $('#content').append(element);
         $('#content').scrollTop(document.getElementById('content').scrollHeight)
     })
     socket.on('channel load',function(users){

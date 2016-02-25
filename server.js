@@ -22,7 +22,15 @@ io.on('connection',function(socket){
     socket.on('disconnect',function(){
         activeUsers.splice(activeUsers.indexOf(username),1);
         io.emit('channel leave',username)
-        fs.unlink(process.cwd()+"/public/icons/"+username+".svg")
+        //!!!!!!!! FIX THIS BUG!!!! unlink
+        fs.access(process.cwd()+"/public/icons/"+username+".svg", fs.R_OK | fs.W_OK, function (err) {
+        console.log(err ? 'no access!' : 'can read/write');
+        if(!err){
+        fs.unlink(process.cwd()+"/public/icons/"+username+".svg",function(){
+        console.log('file '+username+'.svg has been deleted.')
+        })   
+        }
+});
     })
     socket.on('channel join',function(user){
         activeUsers.push(user)
