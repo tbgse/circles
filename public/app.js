@@ -37,7 +37,7 @@ $(document).ready(function(){
         var timestamp = d.getHours() + ':' + d.getMinutes();
         var message = $('<span />',{text:msg.message})
         console.log(message)
-        var element = $('<div class="message-bubble-container">').append($('<img class="user-image left" src="icons/'+username+'.svg">')).append($('<div class="message-bubble-left">').append($('<p class="username">'+msg.username+'</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
+        var element = $('<div class="message-bubble-container">').append($('<img class="user-image left" src="icons/'+msg.username+'.svg">')).append($('<div class="message-bubble-left">').append($('<p class="username">'+msg.username+'</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
         //$('#content').append('<div class="message-bubble-container"><img class="user-image left" src="icons/'+msg.username+'.svg"><div class="message-bubble-left"><p class="username">'+msg.username+':</p>'+msg.message+'<p class="timestamp">'+timestamp+'</div></div>') 
         $('#content').append(element);
         $('#content').scrollTop(document.getElementById('content').scrollHeight)
