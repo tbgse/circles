@@ -154,10 +154,11 @@ input:focus {
 .message-bubble-container {
     width:100%;
     background:transparent;
-    height:130px;
+    min-height:130px;
+    float:right;
 }
 .message-bubble-left:after,.message-bubble-right:after{
-	top: 25%;
+	top: 20px;
 	border: solid transparent;
 	content: " ";
 	height: 0;
@@ -180,8 +181,12 @@ input:focus {
 .message-bubble-left, .message-bubble-right {
     background:white;
     display:block;
+    max-width:50%;
     position:relative;
+    overflow-wrap:break-word;
+    word-break:break-word;
     top:15px;
+    margin-bottom:20px;
     opacity:0.7;
     padding:15px 35px 15px 35px;
     border-radius:25px;
@@ -196,7 +201,8 @@ input:focus {
     text-align:center;
     width:100%;
     font-size:1.2rem;
-    height:80px;
+    float:left;
+    margin:30px 0px 20px 0px;
 }
 
 .message-bubble-right {

@@ -54,6 +54,7 @@ $(document).ready(function(){
 
     })
     socket.on('channel join',function(user){
+            $('#content').append('<div class="info-message">'+user+' joined the chat.</div>')
             $('#users').append('<div class="user-container" id='+user+'><img class="user-image small" src="icons/'+user+'.svg"><span>'+user+'</span></div>')
     })
     socket.on('channel leave',function(username){
