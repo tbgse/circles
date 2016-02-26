@@ -58,11 +58,13 @@ $(document).ready(function(){
             $('#users').append('<div class="user-container" id='+user+'><img class="user-image small" src="icons/'+encodeFilename(user)+'.svg"><span>'+user+'</span></div>')
     })
     socket.on('channel leave',function(username){
+        if (username !== null){
         $('#content').append('<div class="info-message">'+username+' left the chat.</div>')
         $('#content').scrollTop(document.getElementById('content').scrollHeight)
         $('#'+username).fadeOut(500,function(){
             $(this).remove();
         });
+        }
     })
 })
 
