@@ -2,7 +2,7 @@ body,html {
     height:100%;
     margin:0;
     padding:0;
-    font-size:16px;
+    font-size:14px;
     font-family:"Open Sans";
 }
 textarea {
@@ -20,7 +20,7 @@ textarea {
     float:left;
     box-sizing:border-box;
     padding:20px;
-
+    overflow-y:auto;
 }
 .btn-round {
     border:none;
@@ -69,8 +69,8 @@ input:focus {
     margin:auto;
 }
 .username {
-    font-size:1rem;
-    color:#ccc;
+    font-size:1.1rem;
+    color:#999;
     margin:0;
 }
 .timestamp {
@@ -87,13 +87,13 @@ input:focus {
 }
 .content {
     width:100%;
-    font-size:1.5rem;
+    font-size:1.4rem;
     background:lightgrey;
     padding:85px 10% 25px 10%;
     box-sizing:border-box;
     position:relative;
     bottom:65px;
-    overflow-y:scroll;
+    overflow-y:auto;
     height:100%;
 }
 .user-image {
@@ -154,7 +154,7 @@ input:focus {
 .message-bubble-container {
     width:100%;
     background:transparent;
-    min-height:130px;
+    min-height:100px;
     float:right;
 }
 .message-bubble-left:after,.message-bubble-right:after{
@@ -188,7 +188,7 @@ input:focus {
     top:15px;
     margin-bottom:20px;
     opacity:0.7;
-    padding:15px 35px 15px 35px;
+    padding:8px 25px 8px 25px;
     border-radius:25px;
     animation: bounce .45s forwards; /* IE 10+, Fx 29+ */
 }
@@ -208,6 +208,38 @@ input:focus {
 .message-bubble-right {
     margin-right:20px;
     float:right;
+}
+
+.content::-webkit-scrollbar {
+    width: 10px;
+    margin-right:5px;
+    height:90%;
+}
+
+.content::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background:#ddd;
+}
+
+.content::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+        background:#999;
+}
+
+.user-list::-webkit-scrollbar {
+    width: 10px;
+    margin-right:5px;
+    height:90%;
+}
+
+.user-list::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background:#222;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+        background:#555;
 }
 
 @media only screen and (max-width: 900px) {

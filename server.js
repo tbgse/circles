@@ -13,37 +13,34 @@ router.get('/',function(req,res){
 
 router.use(express.static('public'))
 var activeUsers = [];
-console.log("test123")
 io.on('connection',function(socket){
     var username;
-    console.log(activeUsers)
-    console.log(socket.id)
     console.log('a user connected');
     socket.on('disconnect',function(){
         activeUsers.splice(activeUsers.indexOf(username),1);
         io.emit('channel leave',username)
-        //!!!!!!!! FIX THIS BUG!!!! unlink
-        fs.access(process.cwd()+"/public/icons/"+username+".svg", fs.R_OK | fs.W_OK, function (err) {
+        fs.access(process.cwd()+"/public/icons/"+encodeFilename(username)+".svg", fs.R_OK | fs.W_OK, function (err) {
         console.log(err ? 'no access!' : 'can read/write');
         if(!err){
-        fs.unlink(process.cwd()+"/public/icons/"+username+".svg",function(){
-        console.log('file '+username+'.svg has been deleted.')
+        fs.unlink(process.cwd()+"/public/icons/"+encodeFilename(username)+".svg",function(){
+        console.log('file '+encodeFilename(username)+'.svg has been deleted.')
         })   
         }
 });
     })
     socket.on('channel join',function(user){
+        console.log(user)
         while (activeUsers.indexOf(user) >=0 ) {
         console.log('user already exists, creating alter ego')
         user = user += Math.floor(Math.random()*100)
         }
-        activeUsers.push(user)
         username = user;
+        activeUsers.push(user)
         var hash = md5(username);
         var size = 50;
         var svg = jdenticon.toSvg(hash, size);
         socket.emit('channel load',activeUsers);
-        fs.writeFile(process.cwd()+"/public/icons/"+username+".svg",svg,function(err){
+        fs.writeFile(process.cwd()+"/public/icons/"+encodeFilename(username)+".svg",svg,function(err){
             if (err) console.log(err);
         socket.broadcast.emit('channel join',user);
         })
@@ -51,7 +48,6 @@ io.on('connection',function(socket){
     })
     socket.on('text message',function(msg){
         socket.broadcast.emit('text message',msg)
-    console.log('message: '+msg)    
     })
 })
 
@@ -71,3 +67,7 @@ String.prototype.hashCode = function() {
   }
   return hash;
 };
+
+function encodeFilename(str){
+    return encodeURIComponent(str).replace(/[%\.]/gi,'_');
+}
