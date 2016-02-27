@@ -259,7 +259,7 @@ input:focus {
     }
     
     .content,.chatbox textarea {
-        font-size:1rem;
+        font-size:16px;
     }
     .content {
         padding:35px 10px 0px 10px;
@@ -287,6 +287,13 @@ input:focus {
     .chatbox {
         height:40px;
     }
+}
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+  select,
+  textarea,
+  input {
+    font-size: 16px;
+  }
 }
 
 @keyframes bounce {
