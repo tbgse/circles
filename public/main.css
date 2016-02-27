@@ -92,7 +92,7 @@ input:focus {
     padding:85px 10% 25px 10%;
     box-sizing:border-box;
     position:relative;
-    bottom:65px;
+    bottom:75px;
     overflow-y:auto;
     height:100%;
 }
@@ -263,6 +263,7 @@ input:focus {
     }
     .content {
         padding:60px 10px 0px 10px;
+        bottom:40px;
     }
     .user-list {
         display:none;
