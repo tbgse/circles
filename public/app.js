@@ -77,6 +77,12 @@ $(document).ready(function(){
 // Please also add a comment with a short description of the commmand and if it is visible to "user-only", "all-users" or "specific users"
 function executeCommand(str){
     console.log(str)
+
+    var cmdMap = {
+      'about': showAbout,
+      'commands': showCommands
+    };
+
     // remove '/'; to lowercase; make into array
     var commandArray = str.slice(1)
                           .toLowerCase()
@@ -84,16 +90,9 @@ function executeCommand(str){
     var cmd = commandArray[0];
     var args = commandArray.slice(1);
 
-    switch (cmd){
-      case '/about':
-        showAbout();
-        break;
-      case '/commands':
-        showCommands();
-        break;
-      default:
-        showCommandError();
-    }
+    // run the command w/ args OR error.
+    (cmdMap[cmd] || showCommandError)(args);
+    
  $('#content').scrollTop(document.getElementById('content').scrollHeight)
       $('#message').val('').focus();
 }
