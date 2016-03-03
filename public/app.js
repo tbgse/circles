@@ -7,7 +7,7 @@ $(document).ready(function(){
       return false;
     }
   })
-  
+
   $('#setUsername').submit(function(event){
     event.preventDefault();
     username = $('#username').val();
@@ -16,7 +16,7 @@ $(document).ready(function(){
     $('.overlay').remove();
     $('.overlay-message').remove();
   })
-  
+
   $('#chat').submit(function(event){
     event.preventDefault();
     var d = new Date();
@@ -29,14 +29,14 @@ $(document).ready(function(){
       var message = $('<span />',{text:writing})
       socket.emit('text message',{username:username,message:writing});
       var element = $('<div class="message-bubble-container">').append($('<img class="user-image right" src="icons/'+encodeFilename(username)+'.svg">')).append($('<div class="message-bubble-right">').append($('<p class="username">Me:</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
-      //$('#content').append('<div class="message-bubble-container"><img class="user-image right" src="icons/'+username+'.svg"><div class="message-bubble-right"><p class="username">Me:</p>'+message+'<p class="timestamp">'+timestamp+'</p></div></div>')  
+      //$('#content').append('<div class="message-bubble-container"><img class="user-image right" src="icons/'+username+'.svg"><div class="message-bubble-right"><p class="username">Me:</p>'+message+'<p class="timestamp">'+timestamp+'</p></div></div>')
       $("#content").append(element)
       $('#content').scrollTop(document.getElementById('content').scrollHeight)
       $('#message').val('').focus();
       return false;
     }
   })
-    
+
   socket.on('text message',function(msg){
     var d = new Date();
     var timestamp = d.getHours() + ':' + d.getMinutes();
@@ -45,7 +45,7 @@ $(document).ready(function(){
     $('#content').append(element);
     $('#content').scrollTop(document.getElementById('content').scrollHeight)
   })
-  
+
   socket.on('channel load',function(users){
     username = users[users.length-1];
     $('#content').append('<div class="info-message">Welcome to the main channel, '+username+'. Enter /commands to see a list of all available commands.</div>')
@@ -53,14 +53,14 @@ $(document).ready(function(){
     $('#users').empty();
     users.forEach(function(x){
       $('#users').append('<div class="user-container" id='+x+'><img class="user-image small" src="icons/'+encodeFilename(x)+'.svg"><span>'+x+'</span></div>')
-    })  
+    })
   })
-  
+
   socket.on('channel join',function(user){
     $('#content').append('<div class="info-message">'+user+' joined the chat.</div>')
     $('#users').append('<div class="user-container" id='+user+'><img class="user-image small" src="icons/'+encodeFilename(user)+'.svg"><span>'+user+'</span></div>')
   })
-  
+
   socket.on('channel leave',function(username){
     if (username !== null){
       $('#content').append('<div class="info-message">'+username+' left the chat.</div>')
@@ -77,17 +77,22 @@ $(document).ready(function(){
 // Please also add a comment with a short description of the commmand and if it is visible to "user-only", "all-users" or "specific users"
 function executeCommand(str){
     console.log(str)
-    var command = str.match(/\/[\w\d]*/)[0].toLowerCase();
-    switch (command){
-      case '/about':
-        showAbout();
-        break;
-      case '/commands':
-        showCommands();
-        break;
-      default:
-        showCommandError();
-    }
+
+    var cmdMap = {
+      'about': showAbout,
+      'commands': showCommands
+    };
+
+    // remove '/'; to lowercase; make into array
+    var commandArray = str.slice(1)
+                          .toLowerCase()
+                          .split(' ');
+    var cmd = commandArray[0];
+    var args = commandArray.slice(1);
+
+    // run the command w/ args OR error.
+    (cmdMap[cmd] || showCommandError)(args);
+    
  $('#content').scrollTop(document.getElementById('content').scrollHeight)
       $('#message').val('').focus();
 }
@@ -103,7 +108,7 @@ function showCommands(){
 }
 
 function showCommandError(command){
-    $('#content').append('<div class="info-message">Command not found.</div>');    
+    $('#content').append('<div class="info-message">Command not found.</div>');
 }
 
 //string encoding functions
