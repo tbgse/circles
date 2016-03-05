@@ -52,8 +52,9 @@ $(document).ready(function(){
   })
 
   socket.on('channel load',function(users){
+    $("textarea").focus();
     username = users[users.length-1];
-    $('#content').append('<div class="info-message">Welcome to the main channel, '+username+'. Enter /commands to see a list of all available commands.</div>')
+    $('#content').append('<div class="info-message">Welcome to the main channel, '+username+'.<br>Enter /commands to see a list of all available commands.</div>')
     $('#content').scrollTop(document.getElementById('content').scrollHeight)
     $('#users').empty();
     users.forEach(function(x){
