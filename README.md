@@ -14,6 +14,5 @@ Get started using Circles
 ### run the app
 Circles uses Env variables for the host and the port.
 
-To run locally on port 5000 run the following
-
-`HOST=0.0.0.0 PORT=5000 node server.js`
+Create a `.env` file that contains the following:
+`PORT = PORT_NUMBER`

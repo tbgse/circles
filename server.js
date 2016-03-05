@@ -54,9 +54,9 @@ io.on('connection',function(socket){
     })
 })
 
-server.listen(process.env.PORT,process.env.IP,function(){
-    console.log('server listening on '+process.env.IP+' at port '+process.env.PORT)
-})
+server.listen(process.env.PORT, function(){
+    console.log('Server listening on port '+ process.env.PORT);
+});
 
 
 String.prototype.hashCode = function() {
