@@ -105,7 +105,7 @@ function executeCommand(str){
 
 // shows information about the app, user-only
 function showAbout(){
-    $('#content').append('<div class="info-message"> Cirlces v0.0.5. Released under MIT license.<br>Fork and Star the Repository on Github:https://github.com/tbgse/circles<br>A project by Tobias Guse @tbgse<br>Contributors:<br>Placeholder | Feature</div>');
+    $('#content').append('<div class="info-message"> Cirlces v0.0.5. Released under MIT license.<br>Fork and Star the Repository on Github: <a href="https://github.com/tbgse/circles" target="_blank">https://github.com/tbgse/circles</a><br>A project by Tobias Guse <a href="https://github.com/tbgse" target="_blank">@tbgse</a><br>Contributors:<br>Akira Laine | <a href="https://github.com/AkiraLaine" target="_blank">GitHub</a><br>Thomas N | <a href="https://github.com/t3h2mas" target="_blank">GitHub</a></div>');
 }
 
 // shows a list of all available commands
