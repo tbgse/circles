@@ -57,12 +57,14 @@ $(document).ready(function(){
     $('#content').append('<div class="info-message">Welcome to the main channel, '+username+'.<br>Enter /commands to see a list of all available commands.</div>')
     $('#content').scrollTop(document.getElementById('content').scrollHeight)
     $('#users').empty();
+    console.log('List of all users '+users)
     users.forEach(function(x){
       $('#users').append('<div class="user-container" id='+x+'><img class="user-image small" src="icons/'+encodeFilename(x)+'.svg"><span>'+x+'</span></div>')
     })
   })
 
   socket.on('channel join',function(user){
+    console.log(user +" joined the channel")
     $('#content').append('<div class="info-message">'+user+' joined the chat.</div>')
     $('#users').append('<div class="user-container" id='+user+'><img class="user-image small" src="icons/'+encodeFilename(user)+'.svg"><span>'+user+'</span></div>')
   })

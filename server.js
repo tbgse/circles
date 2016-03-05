@@ -39,6 +39,7 @@ io.on('connection',function(socket){
         }
         username = user;
         activeUsers.push(user)
+        console.log('currently active '+activeUsers)
         var hash = md5(username);
         var size = 50;
         var svg = jdenticon.toSvg(hash, size);
