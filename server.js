@@ -5,10 +5,7 @@ var express = require('express'),
     jdenticon = require('jdenticon'),
     fs = require('fs'),
     md5 = require('js-md5'),
-    io = require('socket.io')(server),
-    dotenv = require('dotenv');
-
-dotenv.load();
+    io = require('socket.io')(server);
 
 router.get('/',function(req,res){
     res.sendFile(process.cwd()+'/public/index.html')
