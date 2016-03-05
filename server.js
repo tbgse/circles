@@ -24,7 +24,7 @@ io.on('connection',function(socket){
         if(!err){
         fs.unlink(process.cwd()+"/public/icons/"+encodeFilename(username)+".svg",function(){
         console.log('file '+encodeFilename(username)+'.svg has been deleted.')
-        })   
+        })
         }
 });
     })
@@ -44,15 +44,14 @@ io.on('connection',function(socket){
             if (err) console.log(err);
         socket.broadcast.emit('channel join',user);
         })
-       
+
     })
     socket.on('text message',function(msg){
         socket.broadcast.emit('text message',msg)
     })
 })
 
-
-server.listen(process.env.PORT,process.env.IP,function(){
+server.listen(3000,process.env.IP,function(){
     console.log('server listening on '+process.env.IP+' at port '+process.env.PORT)
 })
 

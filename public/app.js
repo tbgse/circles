@@ -1,4 +1,5 @@
 var socket=io();
+var voice = false;
 $(document).ready(function(){
   var username;
   $('#message').keydown(function(event){
@@ -43,6 +44,10 @@ $(document).ready(function(){
     var message = $('<span />',{text:msg.message})
     var element = $('<div class="message-bubble-container">').append($('<img class="user-image left" src="icons/'+encodeFilename(msg.username)+'.svg">')).append($('<div class="message-bubble-left">').append($('<p class="username">'+msg.username+'</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
     $('#content').append(element);
+    if(voice){
+        var msg = new SpeechSynthesisUtterance(msg.message);
+        window.speechSynthesis.speak(msg);
+    }
     $('#content').scrollTop(document.getElementById('content').scrollHeight)
   })
 
@@ -80,7 +85,8 @@ function executeCommand(str){
 
     var cmdMap = {
       'about': showAbout,
-      'commands': showCommands
+      'commands': showCommands,
+      "voice": toggleVoice
     };
 
     // remove '/'; to lowercase; make into array
@@ -92,7 +98,7 @@ function executeCommand(str){
 
     // run the command w/ args OR error.
     (cmdMap[cmd] || showCommandError)(args);
-    
+
  $('#content').scrollTop(document.getElementById('content').scrollHeight)
       $('#message').val('').focus();
 }
@@ -104,7 +110,17 @@ function showAbout(){
 
 // shows a list of all available commands
 function showCommands(){
-    $('#content').append('<div class="info-message">/about - shows information about this application<br>/commands - lists all available commands<br></div>');
+    $('#content').append('<div class="info-message">/about - shows information about this application<br>/voice - activates text to speech<br>/commands - lists all available commands<br></div>');
+}
+
+function toggleVoice(){
+    if(voice === false){
+        voice = true;
+        $('#content').append('<div class="info-message">Text to speech has been activated<br>/commands - lists all available commands<br></div>');
+    } else {
+        voice = false;
+        $('#content').append('<div class="info-message">Text to speech has been deactivated<br>/commands - lists all available commands<br></div>');
+    }
 }
 
 function showCommandError(command){
