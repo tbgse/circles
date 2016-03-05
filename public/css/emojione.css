@@ -1,0 +1,24 @@
+.emojione {
+  /* Emoji Sizing */
+  font-size: inherit;
+  height: 3ex;
+  width: 3.1ex;
+  min-height: 20px;
+  min-width: 20px;
+
+  /* Inline alignment adjust the margins  */
+  display: inline-block;
+  margin: -.2ex .15em .2ex;
+  line-height: normal;
+  vertical-align: middle;
+}
+.emojione.large {
+  height:6ex;
+  margin:3px 0 5px 0;
+  width:6ex;
+}
+
+img.emojione {
+  /* prevent img stretch */
+  width: auto;
+}

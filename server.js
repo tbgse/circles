@@ -5,19 +5,24 @@ var express = require('express'),
     jdenticon = require('jdenticon'),
     fs = require('fs'),
     md5 = require('js-md5'),
-    io = require('socket.io')(server);
+    activeUsers = [],
+    io = require('socket.io')(server),
+    dotenv = require('dotenv').config();
 
 router.get('/',function(req,res){
     res.sendFile(process.cwd()+'/public/index.html')
 })
 
 router.use(express.static('public'))
-var activeUsers = [];
 io.on('connection',function(socket){
     var username;
     console.log('a user connected');
     socket.on('disconnect',function(){
+        console.log('user '+username+ ' is disconnecting')
+        if (activeUsers.indexOf(username) >= 0){
         activeUsers.splice(activeUsers.indexOf(username),1);
+        console.log("currently active "+activeUsers)
+        }
         io.emit('channel leave',username)
         fs.access(process.cwd()+"/public/icons/"+encodeFilename(username)+".svg", fs.R_OK | fs.W_OK, function (err) {
         console.log(err ? 'no access!' : 'can read/write');

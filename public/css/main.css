@@ -2,7 +2,7 @@ body,html {
     height:100%;
     margin:0;
     padding:0;
-    font-size:14px;
+    font-size:12px;
     font-family:"Open Sans";
 }
 a {
@@ -10,6 +10,7 @@ a {
 }
 textarea {
     box-sizing:border-box;
+    font-family:open sans;
 }
 .wrapper {
     height:100%;
@@ -62,7 +63,8 @@ input:focus {
     background:white;
     z-index:105;
     width:600px;
-    height:250px;
+    height:200px;
+    font-size:1.2rem;
     padding:25px;
     box-sizing:border-box;
     top:0;
@@ -92,12 +94,11 @@ input:focus {
     width:100%;
     font-size:1.4rem;
     background:lightgrey;
-    padding:85px 10% 25px 10%;
+    padding:0px 10% 20px 10%;
     box-sizing:border-box;
     position:relative;
-    bottom:75px;
     overflow-y:auto;
-    height:100%;
+    height:calc( 100% - 75px )
 }
 .user-image {
     height:75px;
@@ -121,11 +122,27 @@ input:focus {
 
 .user-container {
     width:100%;
+    overflow:hidden;
     height:75px;
     float:left;
     font-size:1.2rem;
     color:#eee;
      line-height:60px;
+}
+.unread-messages {
+    color:green;
+    position:absolute;
+    top:-50px;
+    font-weight:600;
+    background:white;
+    height:40px;
+    opacity:0.7;
+    line-height:40px;
+    padding:0px 20px 0px 20px;
+    text-align:center;
+    border-radius:10px;
+    left:10px;
+    z-index:10;
 }
 
 .left {
@@ -185,12 +202,13 @@ input:focus {
     display:block;
     max-width:50%;
     position:relative;
+    min-width:54px;
     overflow-wrap:break-word;
     word-break:break-word;
     top:5px;
     margin-bottom:15px;
     opacity:0.7;
-    padding:8px 25px 8px 25px;
+    padding:10px 20px 4px 20px;
     border-radius:25px;
     animation: bounce .45s forwards; /* IE 10+, Fx 29+ */
 }
@@ -305,3 +323,4 @@ input:focus {
   65% { transform: scale(0.95) }
   100% {transform: scale(1); opacity:1;}
 }
+

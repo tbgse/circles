@@ -1,9 +1,55 @@
 var socket=io();
 var voice = false;
+var emojiSelect;
+var unreadMessages = 0;
+
 $(document).ready(function(){
   var username;
+  
+  //emoji autocomplete
+  $("textarea").textcomplete([ {
+        match: /\B:([\-+\w]*)$/,
+        search: function (term, callback) {
+            var results = [];
+            var results2 = [];
+            var results3 = [];
+            $.each(emojiStrategy,function(shortname,data) {
+                if(shortname.indexOf(term) > -1) { results.push(shortname); }
+                else {
+                    if((data.aliases !== null) && (data.aliases.indexOf(term) > -1)) {
+                        results2.push(shortname);
+                    }
+                    else if((data.keywords !== null) && (data.keywords.indexOf(term) > -1)) {
+                        results3.push(shortname);
+                    }
+                }
+            });
+ 
+            if(term.length >= 3) {
+                results.sort(function(a,b) { return (a.length > b.length); });
+                results2.sort(function(a,b) { return (a.length > b.length); });
+                results3.sort();
+            }
+            var newResults = results.concat(results2).concat(results3);
+ 
+            callback(newResults);
+        },
+        template: function (shortname) {
+            return '<img class="emojione" src="//cdn.jsdelivr.net/emojione/assets/png/'+emojiStrategy[shortname].unicode+'.png"> :'+shortname+':';
+        },
+        replace: function (shortname) {
+            return ':'+shortname+': ';
+        },
+        index: 1,
+        maxCount: 6
+    }
+    ],{
+        footer: '<a href="http://www.emoji.codes" target="_blank">Browse All<span class="arrow">»</span></a>'
+    });
+  
+  //textarea enter key listener  
   $('#message').keydown(function(event){
-    if (event.which === 13){
+    if (event.which === 13 && !emojiSelect){
       $('#chat').submit();
       return false;
     }
@@ -27,12 +73,13 @@ $(document).ready(function(){
       executeCommand(writing)
     }
     else {
-      var message = $('<span />',{text:writing})
+
+      var message = $("<span>"+emojione.shortnameToImage(writing)+"</span>");
       socket.emit('text message',{username:username,message:writing});
       var element = $('<div class="message-bubble-container">').append($('<img class="user-image right" src="icons/'+encodeFilename(username)+'.svg">')).append($('<div class="message-bubble-right">').append($('<p class="username">Me:</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
       //$('#content').append('<div class="message-bubble-container"><img class="user-image right" src="icons/'+username+'.svg"><div class="message-bubble-right"><p class="username">Me:</p>'+message+'<p class="timestamp">'+timestamp+'</p></div></div>')
       $("#content").append(element)
-      $('#content').scrollTop(document.getElementById('content').scrollHeight)
+      scrollToBottom();
       $('#message').val('').focus();
       return false;
     }
@@ -41,8 +88,8 @@ $(document).ready(function(){
   socket.on('text message',function(msg){
     var d = new Date();
     var timestamp = d.getHours() + ':' + d.getMinutes();
-    var message = $('<span />',{text:msg.message})
-    var element = $('<div class="message-bubble-container">').append($('<img class="user-image left" src="icons/'+encodeFilename(msg.username)+'.svg">')).append($('<div class="message-bubble-left">').append($('<p class="username">'+msg.username+'</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
+    var message = $("<span>"+emojione.shortnameToImage(msg.message)+"</span>");
+    var element = $('<div class="message-bubble-container">').append($('<img class="user-image left" src="icons/'+encodeFilename(msg.username)+'.svg">')).append($('<div class="message-bubble-left">').append($('<p class="username">'+msg.username+':</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
     $('#content').append(element);
     if(voice){
         var msg = new SpeechSynthesisUtterance(msg.message);
@@ -55,25 +102,26 @@ $(document).ready(function(){
     $("textarea").focus();
     username = users[users.length-1];
     $('#content').append('<div class="info-message">Welcome to the main channel, '+username+'.<br>Enter /commands to see a list of all available commands.</div>')
-    $('#content').scrollTop(document.getElementById('content').scrollHeight)
+    scrollToBottom();
     $('#users').empty();
     console.log('List of all users '+users)
     users.forEach(function(x){
-      $('#users').append('<div class="user-container" id='+x+'><img class="user-image small" src="icons/'+encodeFilename(x)+'.svg"><span>'+x+'</span></div>')
+      $('#users').append('<div class="user-container" id='+encodeFilename(x)+'><img class="user-image small" src="icons/'+encodeFilename(x)+'.svg"><span>'+x+'</span></div>')
     })
   })
 
   socket.on('channel join',function(user){
     console.log(user +" joined the channel")
     $('#content').append('<div class="info-message">'+user+' joined the chat.</div>')
-    $('#users').append('<div class="user-container" id='+user+'><img class="user-image small" src="icons/'+encodeFilename(user)+'.svg"><span>'+user+'</span></div>')
+    $('#users').append('<div class="user-container" id='+encodeFilename(user)+'><img class="user-image small" src="icons/'+encodeFilename(user)+'.svg"><span>'+user+'</span></div>')
+    scrollToBottom();
   })
 
   socket.on('channel leave',function(username){
     if (username !== null){
       $('#content').append('<div class="info-message">'+username+' left the chat.</div>')
-      $('#content').scrollTop(document.getElementById('content').scrollHeight)
-      $('#'+username).fadeOut(500,function(){
+      scrollToBottom();
+      $('#'+encodeFilename(username)).fadeOut(500,function(){
         $(this).remove();
       });
     }
@@ -108,7 +156,7 @@ function executeCommand(str){
 
 // shows information about the app, user-only
 function showAbout(){
-    $('#content').append('<div class="info-message"> Cirlces v0.0.5. Released under MIT license.<br>Fork and Star the Repository on Github: <a href="https://github.com/tbgse/circles" target="_blank">https://github.com/tbgse/circles</a><br>A project by Tobias Guse <a href="https://github.com/tbgse" target="_blank">@tbgse</a><br>Contributors:<br>Akira Laine | <a href="https://github.com/AkiraLaine" target="_blank">GitHub</a><br>Thomas N | <a href="https://github.com/t3h2mas" target="_blank">GitHub</a></div>');
+    $('#content').append('<div class="info-message"> Cirlces v0.0.5. Released under MIT license.<br>Fork and Star the Repository on Github: <a href="https://github.com/tbgse/circles" target="_blank">https://github.com/tbgse/circles</a><br>A project by Tobias Guse <a href="https://github.com/tbgse" target="_blank">GitHub</a><br>Contributors:<br>Akira Laine | <a href="https://github.com/AkiraLaine" target="_blank">GitHub</a><br>Thomas N | <a href="https://github.com/t3h2mas" target="_blank">GitHub</a></div>');
 }
 
 // shows a list of all available commands
@@ -138,3 +186,12 @@ function encodeHTML(str) {
 function encodeFilename(str){
   return encodeURIComponent(str).replace(/[%\.]/gi,'_');
 }
+function scrollToBottom(){
+  console.log($('#content').height())
+  console.log(document.getElementById('content').scrollHeight - $("#content").scrollTop())
+  if ((document.getElementById('content').scrollHeight - $("#content").scrollTop()) < $('#content').height()*1.4){
+    $('#content').scrollTop(document.getElementById('content').scrollHeight)
+    unreadMessages = 0;
+  }
+}
+
