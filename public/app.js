@@ -1,4 +1,5 @@
 var socket=io();
+var voice = false;
 $(document).ready(function(){
   var username;
   $('#message').keydown(function(event){
@@ -43,12 +44,17 @@ $(document).ready(function(){
     var message = $('<span />',{text:msg.message})
     var element = $('<div class="message-bubble-container">').append($('<img class="user-image left" src="icons/'+encodeFilename(msg.username)+'.svg">')).append($('<div class="message-bubble-left">').append($('<p class="username">'+msg.username+'</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
     $('#content').append(element);
+    if(voice){
+        var msg = new SpeechSynthesisUtterance(msg.message);
+        window.speechSynthesis.speak(msg);
+    }
     $('#content').scrollTop(document.getElementById('content').scrollHeight)
   })
 
   socket.on('channel load',function(users){
+    $("textarea").focus();
     username = users[users.length-1];
-    $('#content').append('<div class="info-message">Welcome to the main channel, '+username+'. Enter /commands to see a list of all available commands.</div>')
+    $('#content').append('<div class="info-message">Welcome to the main channel, '+username+'.<br>Enter /commands to see a list of all available commands.</div>')
     $('#content').scrollTop(document.getElementById('content').scrollHeight)
     $('#users').empty();
     users.forEach(function(x){
@@ -80,7 +86,8 @@ function executeCommand(str){
 
     var cmdMap = {
       'about': showAbout,
-      'commands': showCommands
+      'commands': showCommands,
+      "voice": toggleVoice
     };
 
     // remove '/'; to lowercase; make into array
@@ -92,19 +99,29 @@ function executeCommand(str){
 
     // run the command w/ args OR error.
     (cmdMap[cmd] || showCommandError)(args);
-    
+
  $('#content').scrollTop(document.getElementById('content').scrollHeight)
       $('#message').val('').focus();
 }
 
 // shows information about the app, user-only
 function showAbout(){
-    $('#content').append('<div class="info-message"> Cirlces v0.0.5. Released under MIT license.<br>Fork and Star the Repository on Github:https://github.com/tbgse/circles<br>A project by Tobias Guse @tbgse<br>Contributors:<br>Placeholder | Feature</div>');
+    $('#content').append('<div class="info-message"> Cirlces v0.0.5. Released under MIT license.<br>Fork and Star the Repository on Github: <a href="https://github.com/tbgse/circles" target="_blank">https://github.com/tbgse/circles</a><br>A project by Tobias Guse <a href="https://github.com/tbgse" target="_blank">@tbgse</a><br>Contributors:<br>Akira Laine | <a href="https://github.com/AkiraLaine" target="_blank">GitHub</a><br>Thomas N | <a href="https://github.com/t3h2mas" target="_blank">GitHub</a></div>');
 }
 
 // shows a list of all available commands
 function showCommands(){
-    $('#content').append('<div class="info-message">/about - shows information about this application<br>/commands - lists all available commands<br></div>');
+    $('#content').append('<div class="info-message">/about - shows information about this application<br>/voice - activates text to speech<br>/commands - lists all available commands<br></div>');
+}
+
+function toggleVoice(){
+    if(voice === false){
+        voice = true;
+        $('#content').append('<div class="info-message">Text to speech has been activated<br>/commands - lists all available commands<br></div>');
+    } else {
+        voice = false;
+        $('#content').append('<div class="info-message">Text to speech has been deactivated<br>/commands - lists all available commands<br></div>');
+    }
 }
 
 function showCommandError(command){

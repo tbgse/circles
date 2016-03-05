@@ -5,7 +5,10 @@ var express = require('express'),
     jdenticon = require('jdenticon'),
     fs = require('fs'),
     md5 = require('js-md5'),
-    io = require('socket.io')(server);
+    io = require('socket.io')(server),
+    dotenv = require('dotenv');
+
+dotenv.load();
 
 router.get('/',function(req,res){
     res.sendFile(process.cwd()+'/public/index.html')
@@ -24,7 +27,7 @@ io.on('connection',function(socket){
         if(!err){
         fs.unlink(process.cwd()+"/public/icons/"+encodeFilename(username)+".svg",function(){
         console.log('file '+encodeFilename(username)+'.svg has been deleted.')
-        })   
+        })
         }
 });
     })
@@ -44,17 +47,16 @@ io.on('connection',function(socket){
             if (err) console.log(err);
         socket.broadcast.emit('channel join',user);
         })
-       
+
     })
     socket.on('text message',function(msg){
         socket.broadcast.emit('text message',msg)
     })
 })
 
-
-server.listen(process.env.PORT,process.env.IP,function(){
-    console.log('server listening on '+process.env.IP+' at port '+process.env.PORT)
-})
+server.listen(process.env.PORT, function(){
+    console.log('Server listening on port '+ process.env.PORT);
+});
 
 
 String.prototype.hashCode = function() {
