@@ -5,7 +5,10 @@ var express = require('express'),
     jdenticon = require('jdenticon'),
     fs = require('fs'),
     md5 = require('js-md5'),
-    io = require('socket.io')(server);
+    io = require('socket.io')(server),
+    dotenv = require('dotenv');
+
+dotenv.load();
 
 router.get('/',function(req,res){
     res.sendFile(process.cwd()+'/public/index.html')
@@ -51,7 +54,7 @@ io.on('connection',function(socket){
     })
 })
 
-server.listen(3000,process.env.IP,function(){
+server.listen(process.env.PORT,process.env.IP,function(){
     console.log('server listening on '+process.env.IP+' at port '+process.env.PORT)
 })
 
