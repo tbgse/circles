@@ -5,7 +5,7 @@ var unreadMessages = 0;
 
 $(document).ready(function(){
   var username;
-  
+
   //emoji autocomplete
   $("textarea").textcomplete([ {
         match: /\B:([\-+\w]*)$/,
@@ -24,14 +24,14 @@ $(document).ready(function(){
                     }
                 }
             });
- 
+
             if(term.length >= 3) {
                 results.sort(function(a,b) { return (a.length > b.length); });
                 results2.sort(function(a,b) { return (a.length > b.length); });
                 results3.sort();
             }
             var newResults = results.concat(results2).concat(results3);
- 
+
             callback(newResults);
         },
         template: function (shortname) {
@@ -46,11 +46,13 @@ $(document).ready(function(){
     ],{
         footer: '<a href="http://www.emoji.codes" target="_blank">Browse All<span class="arrow">»</span></a>'
     });
-  
-  //textarea enter key listener  
+
+  //textarea enter key listener
   $('#message').keydown(function(event){
     if (event.which === 13 && !emojiSelect){
-      $('#chat').submit();
+      if($("#message").val().length !== 0){
+        $('#chat').submit();
+      }
       return false;
     }
   })
@@ -194,4 +196,3 @@ function scrollToBottom(){
     unreadMessages = 0;
   }
 }
-
