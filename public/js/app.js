@@ -2,9 +2,10 @@ var socket=io();
 var voice = false;
 var emojiSelect;
 var unreadMessages = 0;
-
+var username;
+var activeUsers = [];
 $(document).ready(function(){
-  var username;
+
 
   //emoji autocomplete
   $("textarea").textcomplete([ {
@@ -75,7 +76,6 @@ $(document).ready(function(){
       executeCommand(writing)
     }
     else {
-
       var message = $("<span>"+emojione.shortnameToImage(writing)+"</span>");
       socket.emit('text message',{username:username,message:writing});
       var element = $('<div class="message-bubble-container">').append($('<img class="user-image right" src="icons/'+encodeFilename(username)+'.svg">')).append($('<div class="message-bubble-right">').append($('<p class="username">Me:</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
@@ -97,7 +97,7 @@ $(document).ready(function(){
         var msg = new SpeechSynthesisUtterance(msg.message);
         window.speechSynthesis.speak(msg);
     }
-    $('#content').scrollTop(document.getElementById('content').scrollHeight)
+    scrollToBottom();
   })
 
   socket.on('channel load',function(users){
@@ -108,12 +108,14 @@ $(document).ready(function(){
     $('#users').empty();
     console.log('List of all users '+users)
     users.forEach(function(x){
+      activeUsers.push(x);
       $('#users').append('<div class="user-container" id='+encodeFilename(x)+'><img class="user-image small" src="icons/'+encodeFilename(x)+'.svg"><span>'+x+'</span></div>')
     })
   })
 
   socket.on('channel join',function(user){
     console.log(user +" joined the channel")
+    activeUsers.push(user);
     $('#content').append('<div class="info-message">'+user+' joined the chat.</div>')
     $('#users').append('<div class="user-container" id='+encodeFilename(user)+'><img class="user-image small" src="icons/'+encodeFilename(user)+'.svg"><span>'+user+'</span></div>')
     scrollToBottom();
@@ -122,12 +124,26 @@ $(document).ready(function(){
   socket.on('channel leave',function(username){
     if (username !== null){
       $('#content').append('<div class="info-message">'+username+' left the chat.</div>')
+      activeUsers.splice(activeUsers.indexOf(username),1);
       scrollToBottom();
       $('#'+encodeFilename(username)).fadeOut(500,function(){
         $(this).remove();
       });
     }
   });
+  
+  socket.on('whisper message',function(msg){
+        var d = new Date();
+    var timestamp = d.getHours() + ':' + d.getMinutes();
+    var message = $("<span>"+emojione.shortnameToImage(msg.message)+"</span>");
+    var element = $('<div class="message-bubble-container">').append($('<img class="user-image left" src="icons/'+encodeFilename(msg.username)+'.svg">')).append($('<div class="message-bubble-left whisper">').append($('<p class="username">'+msg.username+' whispers to you:</p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
+    $('#content').append(element);
+    if(voice){
+        var msg = new SpeechSynthesisUtterance(msg.message);
+        window.speechSynthesis.speak(msg);
+    }
+    scrollToBottom();
+  })
 });
 
 // Function handling the chat commands. When adding a new command, there are three steps you have to take:
@@ -139,14 +155,15 @@ function executeCommand(str){
     var cmdMap = {
       'about': showAbout,
       'commands': showCommands,
-      "voice": toggleVoice
+      "voice": toggleVoice,
+      "whisper": doWhisper,
+      "w":doWhisper,
     };
 
     // remove '/'; to lowercase; make into array
     var commandArray = str.slice(1)
-                          .toLowerCase()
                           .split(' ');
-    var cmd = commandArray[0];
+    var cmd = commandArray[0].toLowerCase();
     var args = commandArray.slice(1);
 
     // run the command w/ args OR error.
@@ -163,7 +180,7 @@ function showAbout(){
 
 // shows a list of all available commands
 function showCommands(){
-    $('#content').append('<div class="info-message">/about - shows information about this application<br>/voice - activates text to speech<br>/commands - lists all available commands<br></div>');
+    $('#content').append('<div class="info-message">/about - shows information about this application<br>/voice - activates text to speech<br>/commands - lists all available commands<br>/w [user] - sends a private message to another user<br></div>');
 }
 
 function toggleVoice(){
@@ -174,6 +191,28 @@ function toggleVoice(){
         voice = false;
         $('#content').append('<div class="info-message">Text to speech has been deactivated<br>/commands - lists all available commands<br></div>');
     }
+}
+
+function doWhisper(args) {
+  if (activeUsers.indexOf(args[0]) >= 0 && args[1].trim().length > 0){
+  socket.emit('whisper message',{username: username, input:args});
+  var recipient = args[0];
+  args.splice(0,1);
+  var message = args.join(" ");
+  var d = new Date();
+  var timestamp = d.getHours() + ':' + d.getMinutes();
+  message = $("<span>"+emojione.shortnameToImage(message)+"</span>");
+  var element = $('<div class="message-bubble-container">').append($('<img class="user-image right" src="icons/'+encodeFilename(username)+'.svg">')).append($('<div class="message-bubble-right whisper">').append($('<p class="username">private to '+recipient+' : </p>')).append(message).append($('<p class="timestamp">'+timestamp+'</p>')))
+    $('#content').append(element);
+    if(voice){
+        var msg = new SpeechSynthesisUtterance(msg.message);
+        window.speechSynthesis.speak(msg);
+    }
+    scrollToBottom();
+  }
+  else if (activeUsers.indexOf(args[0]) < 0){
+   $('#content').append('<div class="info-message">Can\'t find user '+args[0]+'.</div>'); 
+  }
 }
 
 function showCommandError(command){

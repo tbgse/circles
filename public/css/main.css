@@ -191,6 +191,12 @@ input:focus {
 	border-right-color: #ffffff;
 	border-width: 15px;
 }
+.message-bubble-left.whisper:after {
+	border-right-color: #eef;
+}
+.message-bubble-right.whisper:after {
+    border-left-color:#eef;
+}
 .message-bubble-right:after {
     right:-27px;
 	border-color: rgba(255, 255, 255, 0);
@@ -215,6 +221,10 @@ input:focus {
 .message-bubble-left {
     margin-left:20px;
     float:left;
+}
+.whisper {
+    background:#eef;
+    border-radius:5px;
 }
 .info-message {
     color:#999;

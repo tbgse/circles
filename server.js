@@ -5,6 +5,7 @@ var express = require('express'),
     jdenticon = require('jdenticon'),
     fs = require('fs'),
     md5 = require('js-md5'),
+    userObj = {},
     activeUsers = [],
     io = require('socket.io')(server),
     dotenv = require('dotenv').config();
@@ -18,7 +19,10 @@ io.on('connection',function(socket){
     var username;
     console.log('a user connected');
     socket.on('disconnect',function(){
+        
         console.log('user '+username+ ' is disconnecting')
+        delete userObj[username]
+        console.log(userObj)
         if (activeUsers.indexOf(username) >= 0){
         activeUsers.splice(activeUsers.indexOf(username),1);
         console.log("currently active "+activeUsers)
@@ -34,12 +38,15 @@ io.on('connection',function(socket){
 });
     })
     socket.on('channel join',function(user){
-        console.log(user)
+
+
         while (activeUsers.indexOf(user) >=0 ) {
         console.log('user already exists, creating alter ego')
         user = user += Math.floor(Math.random()*100)
         }
         username = user;
+        userObj[username] = socket.id;
+        console.log(userObj)
         activeUsers.push(user)
         console.log('currently active '+activeUsers)
         var hash = md5(username);
@@ -54,6 +61,18 @@ io.on('connection',function(socket){
     })
     socket.on('text message',function(msg){
         socket.broadcast.emit('text message',msg)
+    })
+    socket.on('whisper message',function(msg){
+        var recipient = msg.input[0];
+        msg.input.splice(0,1);
+        var message = msg.input.join(" ");
+        var socketid = userObj[recipient]
+        console.log(message);
+        var socketid = userObj[recipient];
+        if (io.sockets.connected[socketid]) {
+          console.log("socket found!");
+          io.sockets.connected[socketid].emit('whisper message',{username:msg.username, message:message});
+        }
     })
 })
 
