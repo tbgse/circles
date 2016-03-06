@@ -197,7 +197,7 @@ function showAbout(){
 
 // shows a list of all available commands
 function showCommands(){
-    $('#content').append('<div class="info-message">/about - shows information about this application<br>/voice - activates text to speech<br>/commands - lists all available commands<br>/w [user] - sends a private message to another user<br></div>');
+    $('#content').append('<div class="info-message">/about - shows information about this application<br>/voice - activates text to speech<br>/clear - clears the chat<br>/me - action command to tell people what you\'re doing (/me is coding)<br>/w [user] - sends a private message to another user<br>commands - lists all available commands<br></div>');
 }
 
 function toggleVoice(){
