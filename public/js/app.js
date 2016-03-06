@@ -3,10 +3,15 @@ var voice = false;
 var emojiSelect;
 var unreadMessages = 0;
 var username;
+<<<<<<< HEAD
 var activeUsers = [];
 $(document).ready(function(){
 
 
+=======
+
+$(document).ready(function(){
+>>>>>>> added /me command
   //emoji autocomplete
   $("textarea").textcomplete([ {
         match: /\B:([\-+\w]*)$/,
@@ -158,7 +163,8 @@ function executeCommand(str){
       "voice": toggleVoice,
       "whisper": doWhisper,
       "w": doWhisper,
-      "clear": clearChat
+      "clear": clearChat,
+      "me": action
     };
 
     // remove '/'; to lowercase; make into array
@@ -166,7 +172,6 @@ function executeCommand(str){
                           .split(' ');
     var cmd = commandArray[0].toLowerCase();
     var args = commandArray.slice(1);
-
     // run the command w/ args OR error.
     (cmdMap[cmd] || showCommandError)(args);
 
@@ -222,6 +227,10 @@ function showCommandError(command){
 
 function clearChat() {
     $("#content").empty();
+}
+
+function action(args){
+    $('#content').append('<div class="info-message">' + username + " " + args.join(" ") + '</div>');
 }
 
 //string encoding functions
