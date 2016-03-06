@@ -75,7 +75,18 @@ $(document).ready(function(){
   $('#chat').submit(function(event){
     event.preventDefault();
     var d = new Date();
-    var timestamp = d.getHours() + ':' + d.getMinutes();
+    var hours, minutes;
+    if(d.getHours() < 10){
+        hours = "0" + d.getHours();
+    } else {
+        hours = d.getHours();
+    }
+    if(d.getMinutes() < 10){
+        minutes = "0" + d.getMinutes();
+    } else {
+        minutes = d.getMinutes();
+    }
+    var timestamp = hours + ':' + minutes;
     var writing = $('#message').val();
     if (writing[0] === '/'){
       executeCommand(writing)
