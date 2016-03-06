@@ -131,7 +131,7 @@ $(document).ready(function(){
       });
     }
   });
-  
+
   socket.on('whisper message',function(msg){
         var d = new Date();
     var timestamp = d.getHours() + ':' + d.getMinutes();
@@ -157,7 +157,8 @@ function executeCommand(str){
       'commands': showCommands,
       "voice": toggleVoice,
       "whisper": doWhisper,
-      "w":doWhisper,
+      "w": doWhisper,
+      "clear": clearChat
     };
 
     // remove '/'; to lowercase; make into array
@@ -211,12 +212,16 @@ function doWhisper(args) {
     scrollToBottom();
   }
   else if (activeUsers.indexOf(args[0]) < 0){
-   $('#content').append('<div class="info-message">Can\'t find user '+args[0]+'.</div>'); 
+   $('#content').append('<div class="info-message">Can\'t find user '+args[0]+'.</div>');
   }
 }
 
 function showCommandError(command){
     $('#content').append('<div class="info-message">Command not found.</div>');
+}
+
+function clearChat() {
+    $("#content").empty();
 }
 
 //string encoding functions

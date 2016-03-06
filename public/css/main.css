@@ -175,6 +175,7 @@ input:focus {
     width:100%;
     background:transparent;
     float:right;
+    margin-top: 10px;
 }
 .message-bubble-left:after,.message-bubble-right:after{
 	top: 20px;
@@ -333,4 +334,3 @@ input:focus {
   65% { transform: scale(0.95) }
   100% {transform: scale(1); opacity:1;}
 }
-
