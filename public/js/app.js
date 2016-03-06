@@ -50,7 +50,7 @@ $(document).ready(function(){
   //textarea enter key listener
   $('#message').keydown(function(event){
     if (event.which === 13 && !emojiSelect){
-      if($("#message").val().length !== 0){
+      if($("#message").val().trim().length !== 0){
         $('#chat').submit();
       }
       return false;
