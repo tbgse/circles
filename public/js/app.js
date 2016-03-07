@@ -5,8 +5,6 @@ var unreadMessages = 0;
 var username;
 var activeUsers = [];
 $(document).ready(function(){
-
-
   //emoji autocomplete
   $("textarea").textcomplete([ {
         match: /\B:([\-+\w]*)$/,
@@ -70,7 +68,18 @@ $(document).ready(function(){
   $('#chat').submit(function(event){
     event.preventDefault();
     var d = new Date();
-    var timestamp = d.getHours() + ':' + d.getMinutes();
+    var hours, minutes;
+    if(d.getHours() < 10){
+        hours = "0" + d.getHours();
+    } else {
+        hours = d.getHours();
+    }
+    if(d.getMinutes() < 10){
+        minutes = "0" + d.getMinutes();
+    } else {
+        minutes = d.getMinutes();
+    }
+    var timestamp = hours + ':' + minutes;
     var writing = $('#message').val();
     if (writing[0] === '/'){
       executeCommand(writing)
@@ -131,7 +140,7 @@ $(document).ready(function(){
       });
     }
   });
-  
+
   socket.on('whisper message',function(msg){
         var d = new Date();
     var timestamp = d.getHours() + ':' + d.getMinutes();
@@ -157,7 +166,9 @@ function executeCommand(str){
       'commands': showCommands,
       "voice": toggleVoice,
       "whisper": doWhisper,
-      "w":doWhisper,
+      "w": doWhisper,
+      "clear": clearChat,
+      "me": action
     };
 
     // remove '/'; to lowercase; make into array
@@ -165,7 +176,6 @@ function executeCommand(str){
                           .split(' ');
     var cmd = commandArray[0].toLowerCase();
     var args = commandArray.slice(1);
-
     // run the command w/ args OR error.
     (cmdMap[cmd] || showCommandError)(args);
 
@@ -180,7 +190,7 @@ function showAbout(){
 
 // shows a list of all available commands
 function showCommands(){
-    $('#content').append('<div class="info-message">/about - shows information about this application<br>/voice - activates text to speech<br>/commands - lists all available commands<br>/w [user] - sends a private message to another user<br></div>');
+    $('#content').append('<div class="info-message">/about - shows information about this application<br>/voice - activates text to speech<br>/clear - clears the chat<br>/me - action command to tell people what you\'re doing (/me is coding)<br>/w [user] - sends a private message to another user<br>commands - lists all available commands<br></div>');
 }
 
 function toggleVoice(){
@@ -211,12 +221,20 @@ function doWhisper(args) {
     scrollToBottom();
   }
   else if (activeUsers.indexOf(args[0]) < 0){
-   $('#content').append('<div class="info-message">Can\'t find user '+args[0]+'.</div>'); 
+   $('#content').append('<div class="info-message">Can\'t find user '+args[0]+'.</div>');
   }
 }
 
 function showCommandError(command){
     $('#content').append('<div class="info-message">Command not found.</div>');
+}
+
+function clearChat() {
+    $("#content").empty();
+}
+
+function action(args){
+    $('#content').append('<div class="info-message">' + username + " " + args.join(" ") + '</div>');
 }
 
 //string encoding functions
