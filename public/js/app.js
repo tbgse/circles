@@ -3,15 +3,8 @@ var voice = false;
 var emojiSelect;
 var unreadMessages = 0;
 var username;
-<<<<<<< HEAD
 var activeUsers = [];
 $(document).ready(function(){
-
-
-=======
-
-$(document).ready(function(){
->>>>>>> added /me command
   //emoji autocomplete
   $("textarea").textcomplete([ {
         match: /\B:([\-+\w]*)$/,
